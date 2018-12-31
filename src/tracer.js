@@ -195,7 +195,7 @@ export default class Tracer {
     let references = options.references || [];
 
     let userTags = options.tags || {};
-    let startTime = options.startTime || this.now();
+    let startTime = options.startTime;
 
     // This flag is used to ensure that CHILD_OF reference is preferred
     // as a parent even if it comes after FOLLOWS_FROM reference.
@@ -253,6 +253,14 @@ export default class Tracer {
 
       parent.finalizeSampling();
       ctx.finalizeSampling();
+    }
+
+    // override to use wallClock + nano
+    const date = Date.now();
+    if (!startTime && Utils.hrTimeSupport()) {
+      startTime = date + process.hrtime(ctx._nano)[1];
+    } else if (!startTime) {
+      startTime = date;
     }
 
     return this._startInternalSpan(
@@ -340,8 +348,6 @@ export default class Tracer {
    * accuracy can be represented.
    */
   now(): number {
-    // TODO investigate process.hrtime; verify it is available in all Node versions.
-    // http://stackoverflow.com/questions/11725691/how-to-get-a-microtime-in-node-js
     return Date.now();
   }
 

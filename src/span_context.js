@@ -24,6 +24,8 @@ export default class SpanContext {
   _flags: number;
   _baggage: any;
   _debugId: ?string;
+  _nano: number;
+  _wallClock: number;
   /**
    * This field exists to help distinguish between when a span can have a properly
    * correlated operation name -> sampling rate mapping, and when it cannot.
@@ -52,7 +54,9 @@ export default class SpanContext {
     flags: number = 0,
     baggage: any = {},
     debugId: ?string = '',
-    samplingFinalized: boolean = false
+    samplingFinalized: boolean = false,
+    wallClock: number = 0,
+    nano: number[] = [0]
   ) {
     this._traceId = traceId;
     this._spanId = spanId;
@@ -64,6 +68,12 @@ export default class SpanContext {
     this._baggage = baggage;
     this._debugId = debugId;
     this._samplingFinalized = samplingFinalized;
+    this._wallClock = Date.now();
+    this._nano = nano;
+    if (Utils.hrTimeSupport()) {
+      // default to 0 if not supported (see above)
+      this._nano = process.hrtime();
+    }
   }
 
   get traceId(): any {

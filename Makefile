@@ -44,7 +44,7 @@ check-node-6:
 	@$(NODE_6) && echo Building using Node 6.x
 
 .PHONY: build-node
-build-node: check-node-6 node-modules
+build-node: node-modules
 	rm -rf ./dist/
 	node_modules/.bin/babel --presets env --plugins transform-class-properties --source-maps -d dist/src/ src/
 	node_modules/.bin/babel --presets env --plugins transform-class-properties --source-maps -d dist/test/ test/

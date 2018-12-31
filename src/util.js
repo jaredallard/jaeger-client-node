@@ -172,4 +172,8 @@ export default class Utils {
         error(err);
       });
   }
+
+  static hrTimeSupport(): boolean {
+    return typeof process !== 'undefined' && process.hrtime;
+  }
 }

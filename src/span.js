@@ -29,13 +29,15 @@ export default class Span {
   static _baggageHeaderCache: any;
   _references: Array<Reference>;
   _baggageSetter: BaggageSetter;
+  _nano: number;
 
   constructor(
     tracer: any,
     operationName: string,
     spanContext: SpanContext,
     startTime: number,
-    references: Array<Reference>
+    references: Array<Reference>,
+    nano: 0
   ) {
     this._tracer = tracer;
     this._operationName = operationName;
@@ -46,6 +48,10 @@ export default class Span {
     this._baggageSetter = tracer._baggageSetter;
     this._logs = [];
     this._tags = [];
+    this._nano = nano;
+    if (Utils.hrTimeSupport()) {
+      this._nano = process.hrtime();
+    }
   }
 
   get operationName(): string {
@@ -190,8 +196,17 @@ export default class Span {
 
     this._spanContext.finalizeSampling();
     if (this._spanContext.isSampled()) {
-      let endTime = finishTime || this._tracer.now();
-      this._duration = endTime - this._startTime;
+      // check if we support hrtime, then assume we were using it before
+      if (Utils.hrTimeSupport()) {
+        this._duration = process.hrtime(this._spanContext._nano)[1];
+      } else {
+        let endTime = finishTime || this._tracer.now();
+        this._duration = endTime - this._startTime;
+      }
+
+      console.log('INFO finished span with duration', this._duration);
+
+      // report it
       this._tracer._report(this);
     }
   }

@@ -13,13 +13,8 @@
     "type": "git",
     "url": "git://github.com/jaegertracing/jaeger-client-node.git"
   },
-  "files": [
-    "dist/src"
-  ],
-  "contributors": [
-    "Yuri Shkuro <ys@uber.com>",
-    "Won Jun Jang <wjang@uber.com>"
-  ],
+  "files": ["dist/src"],
+  "contributors": ["Yuri Shkuro <ys@uber.com>", "Won Jun Jang <wjang@uber.com>"],
   "dependencies": {
     "node-int64": "^0.4.0",
     "thriftrw": "^3.5.0",
@@ -59,7 +54,6 @@
     "semver": "^5",
     "sinon": "^1.17.5",
     "source-map-support": "^0.4.5",
-    "tchannel": "^3.9.0",
     "uber-licence": "^2.0.2",
     "underscore": "^1.8.3"
   },
@@ -83,9 +77,6 @@
     "show-cover": "open coverage/lcov-report/index.html"
   },
   "lint-staged": {
-    "*.{js,json,md}": [
-      "prettier --write",
-      "git add"
-    ]
+    "*.{js,json,md}": ["prettier --write", "git add"]
   }
 }
